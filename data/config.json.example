@@ -1,0 +1,49 @@
+{
+  "sources": ["linkedin", "indeed", "gupy", "manual"],
+  "gmail": {
+    "server": "imap.gmail.com",
+    "inbox": "JOBS",
+    "processed": "JOBS/PROCESSED",
+    "manual": "JOBS/MANUAL",
+    "great": "JOBS/GREAT",
+    "ready": "JOBS/READY",
+    "untriaged": "JOBS/READY",
+    "summary": "JOBS/SUMMARY",
+    "alerts": "INBOX"
+  },
+  "collect": {
+    "first_run_days": 14,
+    "overlap_hours": 1,
+    "days_until_manual": 2
+  },
+  "indeed": {
+    "domain": "br.indeed.com",
+    "resolve_links": true
+  },
+  "gupy": {
+    "search_terms": ["data scientist", "data engineer", "machine learning", "cientista de dados", "analista de dados"],
+    "pause_seconds": 1
+  },
+    "manual": {
+    "great_tags": ["great"],
+    "ready_tags": ["ready"],
+    "reason_prefix": "sent by you"
+  },
+  "clean": {
+    "exclude_title": "\\bPcD\\b|pessoas? com defici|disabilit"
+  },
+  "triage": {
+    "provider": "claude-code",
+    "model": "haiku",
+    "token_created": "2026-11-01",
+    "batch_size": 40,
+    "max_description": 1500,
+    "max_jobs_per_run": 0,
+    "deliver_untriaged_after_days": 0,
+    "alert_after_runs": 3,
+    "timeout_seconds": 600,
+    "resumes": ["ml", "data", "general"],
+    "languages": ["EN", "PT"],
+    "reason_language": "English"
+  }
+}

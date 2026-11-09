@@ -1,0 +1,71 @@
+# Scheduled HireLLMe run on GitHub Actions.
+# Runs only in the repository where the variable HIRELLME_ENABLED = true
+# (Settings > Secrets and variables > Actions > Variables) and needs the secrets
+# GMAIL_USER, GMAIL_APP_PASSWORD and the LLM credential: CLAUDE_CODE_OAUTH_TOKEN (Claude plan)
+# or LLM_API_KEY (an API). See the README (Usage).
+# The watchdog workflow checks one hour later that each scheduled run happened.
+name: Pipeline
+
+on:
+  schedule:
+    - cron: "7 7 * * *"     # 04:07 in Brasília (UTC-3): full run
+    - cron: "17 16 * * *"   # 13:17 in Brasília: full run too (also covers a dropped night run)
+  workflow_dispatch:         # "Run workflow" button, to run it by hand
+    inputs:
+      pending:
+        description: "Only triage + deliver (no collection)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write            # to commit the updated data back to the repository
+
+concurrency:
+  group: pipeline            # never two runs at the same time
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    if: vars.HIRELLME_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Create .env from the secrets
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: |
+          umask 077
+          {
+            echo "GMAIL_USER=$GMAIL_USER"
+            echo "GMAIL_APP_PASSWORD=$GMAIL_APP_PASSWORD"
+            echo "CLAUDE_CODE_OAUTH_TOKEN=$CLAUDE_CODE_OAUTH_TOKEN"
+            echo "LLM_API_KEY=$LLM_API_KEY"
+            echo "HIRELLME_DATA=./data"
+            echo "HIRELLME_UID=$(id -u)"
+            echo "HIRELLME_GID=$(id -g)"
+          } > .env
+
+      - name: Build the image
+        run: docker compose build -q
+
+      - name: Run the pipeline
+        run: |
+          if [ "${{ inputs.pending }}" = "true" ]; then
+            ./run.sh pipeline --pending
+          else
+            ./run.sh pipeline
+          fi
+
+      - name: Commit the data
+        if: always()                  # even if a step failed, what worked is kept
+        run: |
+          git config user.name "hirellme-bot"
+          git config user.email "hirellme-bot@users.noreply.github.com"
+          git add -f data/
+          git diff --cached --quiet || git commit -m "run $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

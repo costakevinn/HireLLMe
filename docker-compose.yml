@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    image: hirellme
+    user: "${HIRELLME_UID:-1000}:${HIRELLME_GID:-1000}"   # on GitHub Actions the user is different
+    env_file: .env
+    environment:
+      HIRELLME_DATA: /data           # inside the container the data folder is always /data
+      HOME: /tmp                     # Claude Code keeps its settings in $HOME
+    volumes:
+      - .:/app
+      - ${HIRELLME_DATA:?set HIRELLME_DATA in .env}:/data

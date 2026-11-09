@@ -1,0 +1,13 @@
+# secrets
+.env
+# personal data (each file has a .example next to it)
+data/config.json
+data/profile.md
+data/raw/jobs.jsonl
+data/raw/runs.jsonl
+data/clean.csv
+data/triaged.csv
+data/raw/triage.jsonl
+# Python
+__pycache__/
+*.pyc

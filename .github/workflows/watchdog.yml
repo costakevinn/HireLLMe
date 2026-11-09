@@ -1,0 +1,63 @@
+# Watchdog: one hour after each scheduled pipeline run, checks that it happened and worked.
+# If it did not happen (GitHub may drop scheduled runs) or it failed, starts it again and
+# emails a notice. Runs only where HIRELLME_ENABLED = true, like the pipeline.
+name: Watchdog
+
+on:
+  schedule:
+    - cron: "7 8 * * *"     # 05:07 Brasília: checks the 04:07 run
+    - cron: "7 17 * * *"    # 14:07 Brasília: checks the 13:17 run
+  workflow_dispatch:
+    inputs:
+      test_email:
+        description: "Only send a test notice email"
+        type: boolean
+        default: false
+
+permissions:
+  actions: write             # to start the pipeline workflow
+  contents: read
+
+jobs:
+  watchdog:
+    if: vars.HIRELLME_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      ACTIONS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/pipeline.yml
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Send a test notice
+        if: inputs.test_email
+        run: python scripts/notify.py test --actions "$ACTIONS_URL"
+
+      - name: Check the run and start it if needed
+        if: ${{ !inputs.test_email }}
+        run: |
+          if [ "${{ github.event.schedule }}" = "7 17 * * *" ]; then
+            since="$(date -u +%Y-%m-%d)T16:00:00Z"; when="13:17"
+          else
+            since="$(date -u +%Y-%m-%d)T07:00:00Z"; when="04:07"
+          fi
+          runs=$(gh run list --workflow pipeline.yml -L 20 --json databaseId,status,conclusion,createdAt \
+                 --jq "[.[] | select(.createdAt >= \"$since\")]")
+          echo "pipeline runs since $since: $runs"
+          if echo "$runs" | jq -e 'any(.[]; .conclusion == "success" or .status != "completed")' >/dev/null; then
+            echo "ok: the run happened (or is still running)"; exit 0
+          fi
+          kind=$([ "$(echo "$runs" | jq length)" = "0" ] && echo missed || echo failed)
+          echo "$kind: starting the pipeline"
+          gh workflow run pipeline.yml
+          sleep 15
+          id=$(gh run list --workflow pipeline.yml -L 1 --json databaseId -q '.[0].databaseId')
+          gh run watch "$id" --exit-status > /dev/null && result=success || result=failure
+          python scripts/notify.py "$kind" --when "$when" --result "$result" \
+            --url "${{ github.server_url }}/${{ github.repository }}/actions/runs/$id" --actions "$ACTIONS_URL"

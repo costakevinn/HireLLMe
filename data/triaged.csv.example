@@ -1,0 +1,4 @@
+id,triaged_at,category,resume,language,reason,title,company,location,sources,deadline,url,other_links,delivered_at
+a1b2c3d4,2026-11-09T07:08:00Z,normal,ml,EN,"Target role, but no level stated in the posting.",Data Scientist,Example Corp,"São Paulo, SP",linkedin,,https://www.linkedin.com/jobs/view/1000000001,,2026-11-09T07:08:30Z
+e5f6a7b8,2026-11-09T07:08:00Z,great,data,PT,"Junior role asking for SQL and Power BI, retail, in Belo Horizonte.",Junior Data Analyst,Fictional Retail Ltd,"Belo Horizonte, MG",indeed,,https://br.indeed.com/viewjob?jk=0123456789abcdef,,2026-11-09T07:08:30Z
+c9d0e1f2,2026-11-09T07:08:00Z,normal,data,EN,"Junior data engineering with Python and SQL; not the main focus.",Junior Data Engineer,Example Tech,Remote,gupy,2026-12-07,https://example.gupy.io/job/eyJqb2JJZCI6MX0=,,2026-11-09T07:08:30Z

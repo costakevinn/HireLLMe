@@ -1,0 +1,49 @@
+# Candidate profile for job triage
+<!-- EXAMPLE. Copy to data/profile.md and replace it with your own information.
+     The LLM reads this file to decide, for every job: great, normal or rejected,
+     which resume to use and in which language. It can be written in any language. -->
+
+## Goal
+<!-- What you want and how urgently. It sets how generous or strict the triage is. -->
+Land interviews for Data Analyst or Data Scientist roles in the next few months.
+The triage can be moderate. When in doubt, the job goes in (as normal).
+
+## About me
+<!-- Education, experience, level and languages: what a recruiter would read in your resume. -->
+- Ana Souza, Belo Horizonte, Brazil.
+- B.Sc. in Statistics (2019–2023); thesis on demand forecasting with time series.
+- Junior Data Analyst at a retail chain (2023–present): SQL, Power BI, Python.
+- Level: junior (~2 years). Languages: Portuguese (native), English (intermediate, B1).
+
+## Skills
+- Languages: Python, SQL, R.
+- Analysis: statistics, A/B testing, time series, regression.
+- Tools: pandas, scikit-learn, Power BI, Excel, PostgreSQL, Git.
+
+## My resumes (pick one per job)
+<!-- These names (ml, data, general) are the ones shown in the email subject. They must match
+     "triage.resumes" in config.json. -->
+- **ml**: Data Scientist; modeling and forecasting roles.
+- **data**: technical Data Analyst; SQL, pipelines, dashboards.
+- **general**: business roles: BI, analytics, planning.
+Language: **PT** for jobs in Brazil posted in Portuguese; **EN** for international jobs or jobs posted in English.
+
+## Categories
+<!-- GREAT = you tailor the resume (more work, so only the best ones).
+     NORMAL = base resume. REJECTED = only when it clearly does not fit. -->
+**GREAT**:
+- Data Analyst or Data Scientist, junior or mid-level (stated in the posting), asking for SQL and Python;
+- or a retail / demand forecasting role.
+
+**NORMAL**:
+- any data role with a real chance; a target role with no level stated;
+- when in doubt: NORMAL.
+
+**REJECTED**:
+- senior or leadership (Lead, Head, Manager); internships;
+- not a data role;
+- on-site outside Minas Gerais; remote roles that require living outside Brazil.
+
+## Preferences (they do not reject a job, they only help to decide)
+- On-site or hybrid in Belo Horizonte; remote anywhere in Brazil.
+- Full-time employee or contractor.

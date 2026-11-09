@@ -1,0 +1,2 @@
+{"started": "2026-11-08T07:09:12Z", "provider": "claude-code", "model": "haiku", "pending": 48, "sent": 48, "decided": 48, "untriaged": 0, "usage": {"input": 61230, "output": 4120}, "stopped": null, "message": "", "finished": "2026-11-08T07:11:40Z"}
+{"started": "2026-11-08T16:19:03Z", "provider": "claude-code", "model": "haiku", "pending": 12, "sent": 0, "decided": 0, "untriaged": 0, "usage": {"input": 0, "output": 0}, "stopped": "limit", "message": "Claude AI usage limit reached", "finished": "2026-11-08T16:19:09Z"}
